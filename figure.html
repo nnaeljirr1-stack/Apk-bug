@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Figure Generator</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ================= VARIABLE (COOL BLUE THEME) ================= */
+    :root {
+        --bg-main: #020812; /* Deep Navy Black */
+        
+        /* Blue Palette */
+        --blue-deep: #020a1c;
+        --blue-mid: #0066ff;    /* Electric Blue */
+        --blue-light: #60efff;  /* Cyan Neon */
+        --blue-glow: #00ccff;   /* Glow Effect */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: var(--bg-main);
+      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* HEADER STYLE */
+    .header-area { margin-bottom: 30px; text-align: center; margin-top: 40px; }
+    
+    .glitch-text {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 22px;
+        font-weight: 900;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px var(--blue-mid);
+        position: relative;
+        display: inline-block;
+    }
+    
+    /* Glitch Animation Blue */
+    .glitch-text::before, .glitch-text::after {
+        content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main);
+    }
+    .glitch-text::before { left: 2px; text-shadow: -1px 0 #0066ff; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+    .glitch-text::after { left: -2px; text-shadow: -1px 0 #00d4ff; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+    
+    @keyframes glitch-anim {
+        0% { clip: rect(10px, 9999px, 30px, 0); } 40% { clip: rect(20px, 9999px, 90px, 0); } 80% { clip: rect(40px, 9999px, 50px, 0); }
+    }
+    @keyframes glitch-anim2 {
+        0% { clip: rect(80px, 9999px, 20px, 0); } 40% { clip: rect(50px, 9999px, 30px, 0); } 80% { clip: rect(90px, 9999px, 10px, 0); }
+    }
+
+    .sub-text { font-size: 10px; color: var(--blue-light); letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+
+    /* FORM CONTAINER */
+    .form-container {
+        width: 100%; max-width: 400px;
+        background: rgba(2, 10, 28, 0.6);
+        border: 1px solid var(--blue-mid);
+        border-radius: 20px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 30px rgba(0, 102, 255, 0.2);
+        margin-bottom: 20px;
+    }
+
+    .input-label { font-family: 'Orbitron'; font-size: 12px; color: var(--blue-light); margin-bottom: 8px; display: block; letter-spacing: 1px; }
+    
+    .url-input {
+        width: 100%;
+        background: #020812;
+        border: 1px solid #004080;
+        border-radius: 15px;
+        padding: 16px 20px;
+        color: #fff;
+        font-family: 'Poppins'; font-size: 13px;
+        transition: 0.3s;
+        margin-bottom: 20px;
+    }
+    .url-input:focus { border-color: var(--blue-glow); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+
+    .btn-magic {
+        width: 100%;
+        background: linear-gradient(90deg, #0052cc, #00d4ff);
+        border: none;
+        border-radius: 50px;
+        padding: 18px;
+        color: #fff;
+        font-family: 'Orbitron'; font-size: 16px;
+        letter-spacing: 1px; cursor: pointer;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        display: flex; justify-content: center; align-items: center; gap: 10px;
+        transition: 0.3s;
+    }
+    .btn-magic:active { transform: scale(0.98); }
+    .btn-magic i { font-size: 18px; }
+
+    /* RESULT IMAGE AREA */
+    .result-box {
+        width: 100%; max-width: 400px;
+        margin-bottom: 20px;
+        display: none;
+        text-align: center;
+        background: rgba(0,0,0,0.3);
+        padding: 10px;
+        border-radius: 15px;
+        border: 1px dashed var(--blue-light);
+    }
+    .generated-img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        cursor: zoom-in;
+        transition: transform 0.2s;
+    }
+    .generated-img:active { transform: scale(0.98); }
+    .download-hint { margin-top: 10px; font-size: 10px; color: #aaa; }
+
+    /* FULLSCREEN MODAL */
+    .fullscreen-modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); z-index: 3000;
+        display: none; align-items: center; justify-content: center;
+        backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s;
+    }
+    .fs-img {
+        max-width: 95%; max-height: 90%;
+        border-radius: 10px;
+        box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* STEPS AREA */
+    .steps-area { width: 100%; max-width: 400px; }
+    .step-title { font-family: 'Orbitron'; color: #fff; font-size: 14px; margin-bottom: 15px; border-left: 3px solid var(--blue-glow); padding-left: 10px; }
+    
+    .step-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(0, 102, 255, 0.2);
+        display: flex; align-items: flex-start; gap: 15px;
+    }
+    .step-num {
+        background: var(--blue-deep); color: var(--blue-light);
+        width: 25px; height: 25px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: bold; border: 1px solid var(--blue-mid);
+        flex-shrink: 0;
+    }
+    .step-desc { font-size: 12px; color: #ccc; line-height: 1.5; font-family: 'Poppins'; }
+
+    /* POPUP & LOADING */
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2500; display: none; backdrop-filter: blur(3px); }
+    
+    .loading-popup {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #020a1c; border: 1px solid var(--blue-mid);
+        border-radius: 20px; padding: 30px; text-align: center;
+        z-index: 2600; display: none; width: 250px;
+        box-shadow: 0 0 40px rgba(0, 102, 255, 0.4);
+    }
+    
+    .clock-icon {
+        font-size: 40px; color: var(--blue-light);
+        margin-bottom: 15px;
+        animation: rotateClock 1s infinite linear;
+    }
+    @keyframes rotateClock { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .pop-title { font-family: 'Orbitron'; font-size: 18px; color: #fff; margin-bottom: 5px; }
+    .pop-sub { font-size: 10px; color: #aaa; }
+
+    /* TOAST */
+    .toast-popup {
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: #020a1c; border: 1px solid #ff3333;
+        color: #fff; padding: 12px 25px; border-radius: 30px;
+        font-size: 12px; z-index: 3000; display: none;
+        box-shadow: 0 0 20px rgba(255, 51, 51, 0.4);
+        animation: slideDown 0.3s;
+    }
+    @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
+
+    /* EXIT BUTTON */
+    .exit-btn {
+        position: fixed; bottom: 25px; right: 25px;
+        width: 55px; height: 55px;
+        background: linear-gradient(135deg, #0042a6, #002244);
+        border: 1px solid var(--blue-mid);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 20px; cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000;
+        transition: 0.3s;
+    }
+    .exit-btn:active { transform: scale(0.9); }
+
+  </style>
+</head>
+<body>
+
+  <div id="overlay"></div>
+
+  <div id="fsModal" class="fullscreen-modal" onclick="closeFullscreen()">
+      <img id="fsImg" class="fs-img" src="" alt="Fullscreen Result">
+  </div>
+
+  <div id="loadingPopup" class="loading-popup">
+      <i class="fas fa-clock clock-icon"></i>
+      <div class="pop-title">Generating...</div>
+      <div class="pop-sub">Creating Figure</div>
+  </div>
+
+  <div id="toastPopup" class="toast-popup">Error Message</div>
+
+  <div class="exit-btn" onclick="window.location.href='/execution'">
+      <i class="fas fa-sign-out-alt"></i>
+  </div>
+
+  <div class="header-area">
+      <div class="glitch-text" data-text="Image To Figure">Image To Figure</div>
+      <div class="sub-text">Convert Image to Figure Style</div>
+  </div>
+
+  <div class="form-container">
+      <span class="input-label">URL</span>
+      <input type="text" id="urlInput" class="url-input" placeholder="http://...">
+      
+      <button class="btn-magic" id="btnGen" onclick="generateFigure()">
+          <i class="fas fa-magic"></i> Generate Figure
+      </button>
+  </div>
+
+  <div id="resultArea" class="result-box">
+      <img id="resImg" class="generated-img" src="" alt="Result" onclick="openFullscreen(this)">
+      <div class="download-hint">Tekan gambar untuk Fullscreen • Tahan untuk simpan</div>
+  </div>
+
+  <div class="steps-area">
+      <div class="step-title">HOW TO USE</div>
+      <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-desc">Upload foto kamu ke Catbox.moe atau Top4Top untuk mendapatkan link URL.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-desc">Salin Link URL gambar tersebut dan tempel pada kolom input di atas.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-desc">Klik tombol "Generate Figure" dan tunggu proses konversi selesai.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-desc">Hasil akan muncul di bawah tombol. Klik gambar untuk memperbesar.</div>
+      </div>
+  </div>
+
+  <script>
+      async function generateFigure() {
+          const input = document.getElementById('urlInput');
+          const btn = document.getElementById('btnGen');
+          const url = input.value.trim();
+          
+          const overlay = document.getElementById('overlay');
+          const loading = document.getElementById('loadingPopup');
+          const resultBox = document.getElementById('resultArea');
+          const resImg = document.getElementById('resImg');
+
+          // 1. Validasi
+          if(!url) {
+              showToast('❌ Masukkan URL Gambar terlebih dahulu!');
+              return;
+          }
+          if(!url.startsWith('http')) {
+              showToast('⚠️ URL tidak valid!');
+              return;
+          }
+
+          // 2. Show Loading
+          overlay.style.display = 'block';
+          loading.style.display = 'block';
+          resultBox.style.display = 'none';
+          btn.disabled = true;
+
+          try {
+              // 3. Request ke API Proxy
+              const apiUrl = `/api/execute-figure?url=${encodeURIComponent(url)}`;
+              
+              const response = await fetch(apiUrl);
+              const data = await response.json();
+
+              // 4. Hide Loading
+              loading.style.display = 'none';
+              overlay.style.display = 'none';
+              btn.disabled = false;
+
+              // 5. Handle Result
+              if(data.status && data.result) {
+                  resImg.src = data.result;
+                  resultBox.style.display = 'block';
+              } else {
+                  showToast('❌ Gagal memproses gambar!');
+              }
+
+          } catch (error) {
+              console.error(error);
+              loading.style.display = 'none';
+              overlay.style.display = 'none';
+              btn.disabled = false;
+              showToast('❌ Server Error / API Offline');
+          }
+      }
+
+      // Fullscreen Logic
+      function openFullscreen(imgElement) {
+          const modal = document.getElementById('fsModal');
+          const fsImg = document.getElementById('fsImg');
+          
+          fsImg.src = imgElement.src;
+          modal.style.display = 'flex';
+      }
+
+      function closeFullscreen() {
+          const modal = document.getElementById('fsModal');
+          modal.style.display = 'none';
+      }
+
+      function showToast(msg) {
+          const toast = document.getElementById('toastPopup');
+          toast.innerText = msg;
+          toast.style.display = 'block';
+          setTimeout(() => {
+              toast.style.display = 'none';
+          }, 3000);
+      }
+  </script>
+
+</body>
+</html>
+
+    
