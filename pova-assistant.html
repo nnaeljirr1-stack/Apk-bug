@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CYBER Assistant 3.5</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ========================================= */
+    /* 1. VARIABLES (COOL BLUE THEME) */
+    /* ========================================= */
+    :root {
+        --bg-main: #020812;
+        --blue-deep: #020a1c;
+        --blue-mid: #0066ff;
+        --blue-light: #60efff;
+        --blue-glow: #00ccff;
+        --text-white: #ffffff;
+        --glass-bg: rgba(2, 10, 20, 0.8);
+        --font-main: 'Rajdhani', sans-serif;
+        --font-header: 'Orbitron', sans-serif;
+        --font-body: 'Poppins', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-white);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 10px; }
+
+    /* ========================================= */
+    /* 2. HEADER & GLITCH EFFECT */
+    /* ========================================= */
+    .chat-header {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(2, 8, 18, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 102, 255, 0.3);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+
+    .glitch-wrapper {
+        display: inline-block;
+        position: relative;
+    }
+
+    .glitch-text {
+        font-family: var(--font-header);
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        text-shadow: 0 0 10px var(--blue-mid);
+    }
+
+    /* Glitch Animation */
+    .glitch-text::before, .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+    }
+    .glitch-text::before {
+        left: 2px; text-shadow: -1px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+    .glitch-text::after {
+        left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim {
+        0% { clip: rect(13px, 9999px, 81px, 0); }
+        5% { clip: rect(89px, 9999px, 16px, 0); }
+        10% { clip: rect(3px, 9999px, 7px, 0); }
+        15% { clip: rect(65px, 9999px, 2px, 0); }
+        20% { clip: rect(20px, 9999px, 90px, 0); }
+        100% { clip: rect(50px, 9999px, 30px, 0); }
+    }
+    @keyframes glitch-anim2 {
+        0% { clip: rect(60px, 9999px, 10px, 0); }
+        5% { clip: rect(10px, 9999px, 90px, 0); }
+        10% { clip: rect(80px, 9999px, 5px, 0); }
+        15% { clip: rect(20px, 9999px, 40px, 0); }
+        20% { clip: rect(5px, 9999px, 60px, 0); }
+        100% { clip: rect(70px, 9999px, 20px, 0); }
+    }
+
+    .sub-header {
+        font-size: 10px; color: var(--blue-light);
+        margin-top: 5px; letter-spacing: 1px;
+        font-family: var(--font-main);
+    }
+
+    /* ========================================= */
+    /* 3. CHAT AREA */
+    /* ========================================= */
+    .chat-container {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-bottom: 20px;
+    }
+
+    .message-bubble {
+        max-width: 85%;
+        padding: 15px;
+        border-radius: 15px;
+        position: relative;
+        font-size: 13px;
+        line-height: 1.6;
+        animation: fadeIn 0.3s ease;
+    }
+
+    /* Bot Bubble */
+    .bot-bubble {
+        background: rgba(2, 10, 28, 0.8);
+        border: 1px solid rgba(0, 102, 255, 0.3);
+        color: #ddd;
+        align-self: flex-start;
+        border-top-left-radius: 2px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .bot-bubble .icon {
+        position: absolute; top: -20px; left: 0;
+        font-size: 16px; color: var(--blue-light);
+    }
+
+    /* User Bubble */
+    .user-bubble {
+        background: linear-gradient(135deg, #004080, #0066ff);
+        color: #fff;
+        align-self: flex-end;
+        border-top-right-radius: 2px;
+        box-shadow: 0 5px 15px rgba(0, 102, 255, 0.2);
+    }
+
+    /* Markdown Style Inside Chat */
+    .bot-bubble code {
+        background: #000; padding: 2px 5px; border-radius: 4px;
+        color: var(--blue-light); font-family: monospace;
+    }
+    .bot-bubble pre {
+        background: #050505; padding: 10px; border-radius: 8px;
+        border: 1px solid #333; overflow-x: auto; margin-top: 5px;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+        display: flex; gap: 5px; padding: 10px 15px;
+        background: rgba(2, 10, 28, 0.8);
+        border-radius: 20px; width: fit-content;
+        border: 1px solid rgba(0, 102, 255, 0.2);
+        display: none; /* Hidden by default */
+    }
+    .dot {
+        width: 6px; height: 6px; background: var(--blue-light);
+        border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ========================================= */
+    /* 4. FEATURES SECTION */
+    /* ========================================= */
+    .features-section {
+        padding: 0 20px; margin-bottom: 20px;
+    }
+    .feat-card {
+        background: rgba(0, 102, 255, 0.05);
+        border: 1px dashed rgba(0, 102, 255, 0.3);
+        border-radius: 12px; padding: 15px;
+        display: flex; gap: 15px; align-items: center;
+    }
+    .feat-icon {
+        width: 40px; height: 40px; background: rgba(0, 102, 255, 0.1);
+        border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        color: var(--blue-light); font-size: 18px;
+    }
+    .feat-text h4 { font-family: var(--font-header); font-size: 12px; color: #fff; margin-bottom: 3px; }
+    .feat-text p { font-size: 10px; color: #aaa; }
+
+    /* ========================================= */
+    /* 5. INPUT AREA */
+    /* ========================================= */
+    .input-area {
+        padding: 20px;
+        background: #020812;
+        border-top: 1px solid rgba(0, 102, 255, 0.2);
+        position: sticky; bottom: 0;
+        display: flex; gap: 10px; align-items: center;
+    }
+    .custom-input {
+        flex: 1; background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(0, 102, 255, 0.3);
+        border-radius: 50px; padding: 15px 20px;
+        color: #fff; font-family: var(--font-body); outline: none;
+        transition: 0.3s;
+    }
+    .custom-input:focus { border-color: var(--blue-light); box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
+    
+    .btn-send {
+        width: 50px; height: 50px; border-radius: 50%;
+        background: linear-gradient(135deg, #0066ff, #00d4ff);
+        border: none; color: #fff; font-size: 18px;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
+        transition: 0.2s;
+    }
+    .btn-send:active { transform: scale(0.9); }
+
+    /* Back Button */
+    .back-btn {
+        position: absolute; left: 20px; top: 22px;
+        color: #fff; font-size: 20px; cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="chat-header">
+      <div class="back-btn" onclick="window.location.href='/execution'">
+          <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="glitch-wrapper">
+          <div class="glitch-text" data-text="CYBER CRASH AsistenT">CYBER CRASH AsistenT</div>
+      </div>
+      <div class="sub-header">INTELLIGENT MODULE 3.5</div>
+  </div>
+
+  <div class="chat-container" id="chatBox">
+      <div class="bot-bubble message-bubble">
+          <i class="fas fa-robot icon"></i>
+          Halo! Saya <b>CYBER CRASH Assistant 3.5</b>. Ada yang bisa saya bantu terkait coding, analisis, atau pertanyaan umum hari ini?
+      </div>
+      
+      <div class="typing-indicator" id="typingLoader">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+  </div>
+
+  <div class="features-section">
+      <div class="feat-card">
+          <div class="feat-icon"><i class="fas fa-code"></i></div>
+          <div class="feat-text">
+              <h4>Code Generator</h4>
+              <p>Membantu membuat script HTML, JS, & Python.</p>
+          </div>
+      </div>
+  </div>
+
+  <div class="input-area">
+      <input type="text" id="userPrompt" class="custom-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
+      <button class="btn-send" onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+      </button>
+  </div>
+
+  <script>
+      const chatBox = document.getElementById('chatBox');
+      const inputField = document.getElementById('userPrompt');
+      const loader = document.getElementById('typingLoader');
+
+      function handleEnter(e) {
+          if (e.key === 'Enter') sendMessage();
+      }
+
+      async function sendMessage() {
+          const text = inputField.value.trim();
+          if (!text) return;
+
+          // 1. Tampilkan Pesan User
+          addBubble(text, 'user');
+          inputField.value = ''; // Clear input
+          
+          // 2. Tampilkan Loading
+          loader.style.display = 'flex';
+          scrollToBottom();
+
+          try {
+              // 3. Panggil API
+              const apiUrl = `https://api-faa.my.id/faa/gemini-ai?text=${encodeURIComponent(text)}`;
+              const response = await fetch(apiUrl);
+              const data = await response.json();
+
+              // 4. Proses Respon
+              // Cek struktur JSON dari API FAA
+              // Biasanya return { result: "..." } atau { response: "..." }
+              let reply = "";
+              
+              if(data.result) {
+                  reply = data.result;
+              } else if (data.response) {
+                  reply = data.response;
+              } else if (typeof data === 'string') {
+                  reply = data;
+              } else {
+                  reply = "Maaf, saya tidak mendapatkan respon valid dari server.";
+              }
+
+              // 5. Sembunyikan Loading & Tampilkan Balasan
+              loader.style.display = 'none';
+              addBubble(reply, 'bot');
+
+          } catch (error) {
+              console.error(error);
+              loader.style.display = 'none';
+              addBubble("Maaf, terjadi kesalahan koneksi. Coba lagi nanti.", 'bot');
+          }
+      }
+
+      function addBubble(text, sender) {
+          const bubble = document.createElement('div');
+          bubble.className = `message-bubble ${sender === 'user' ? 'user-bubble' : 'bot-bubble'}`;
+          
+          // Tambah Icon untuk Bot
+          if(sender === 'bot') {
+              bubble.innerHTML = `<i class="fas fa-robot icon"></i>`;
+          }
+
+          chatBox.insertBefore(bubble, loader); // Masukkan sebelum loader
+          
+          if(sender === 'bot') {
+              // Efek Mengetik untuk Bot
+              typeWriter(text, bubble);
+          } else {
+              bubble.innerText = text;
+              scrollToBottom();
+          }
+      }
+
+      function typeWriter(text, element) {
+          let i = 0;
+          const speed = 15; // Kecepatan mengetik ms
+          
+          // Format basic line break & bold (Simple Parsing)
+          // API sering kirim Markdown (**bold**), kita ganti simpel
+          let formattedText = text
+              .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Bold
+              .replace(/\n/g, '<br>'); // Line break
+
+          // Kita pakai innerHTML langsung untuk hasil akhir, 
+          // tapi untuk efek ngetik yang smooth dengan HTML tags agak tricky.
+          // Untuk keamanan dan kemudahan di versi ini, kita inject langsung jika ada HTML, 
+          // atau gunakan interval text biasa.
+          
+          // Versi Simple: Langsung muncul (Safe & Fast)
+          // Jika ingin efek ngetik per karakter, HTML tag akan rusak.
+          // Jadi kita pakai efek fade-in CSS saja di bubble.
+          
+          // Inject content
+          // Append text setelah icon
+          const contentSpan = document.createElement('span');
+          contentSpan.innerHTML = formattedText;
+          element.appendChild(contentSpan);
+          
+          scrollToBottom();
+      }
+
+      function scrollToBottom() {
+          chatBox.scrollTop = chatBox.scrollHeight;
+      }
+  </script>
+
+</body>
+    </html>
+            
