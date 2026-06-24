@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Check ID Channel</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ================= VARIABLE (COOL BLUE THEME) ================= */
+    :root {
+        --bg-main: #020812; /* Deep Navy Black */
+        
+        /* Blue Palette */
+        --blue-deep: #020a1c;
+        --blue-mid: #0066ff;    /* Electric Blue */
+        --blue-light: #60efff;  /* Cyan Neon */
+        --blue-glow: #00ccff;   /* Glow Effect */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: var(--bg-main);
+      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* HEADER STYLE */
+    .header-area { margin-bottom: 30px; text-align: center; margin-top: 40px; }
+    
+    .glitch-text {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 22px;
+        font-weight: 900;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px var(--blue-mid);
+    }
+
+    .sub-text { font-size: 10px; color: var(--blue-light); letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+
+    /* FORM CONTAINER */
+    .form-container {
+        width: 100%; max-width: 400px;
+        background: rgba(2, 10, 28, 0.6);
+        border: 1px solid var(--blue-mid);
+        border-radius: 20px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 30px rgba(0, 102, 255, 0.2);
+        margin-bottom: 20px;
+    }
+
+    .input-label { font-family: 'Orbitron'; font-size: 12px; color: var(--blue-light); margin-bottom: 8px; display: block; letter-spacing: 1px; }
+    
+    .cool-input {
+        width: 100%;
+        background: #020812;
+        border: 1px solid #004080;
+        border-radius: 15px;
+        padding: 16px 20px;
+        color: #fff;
+        font-family: 'Poppins'; font-size: 14px;
+        transition: 0.3s;
+        margin-bottom: 20px;
+    }
+    .cool-input:focus { border-color: var(--blue-glow); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+
+    .btn-check {
+        width: 100%;
+        background: linear-gradient(90deg, #0052cc, #00d4ff);
+        border: none;
+        border-radius: 50px;
+        padding: 18px;
+        color: #fff;
+        font-family: 'Orbitron'; font-size: 16px;
+        letter-spacing: 1px; cursor: pointer;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        display: flex; justify-content: center; align-items: center; gap: 10px;
+        transition: 0.3s;
+    }
+    .btn-check:active { transform: scale(0.98); }
+    .btn-check i { font-size: 18px; }
+
+    /* RESULT AREA (Hidden Initially) */
+    .result-area {
+        width: 100%; max-width: 400px;
+        background: rgba(0, 255, 136, 0.05);
+        border: 1px solid #00ff88;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        display: none;
+        animation: fadeIn 0.5s;
+    }
+    .res-label { font-size: 10px; color: #aaa; margin-bottom: 3px; letter-spacing: 1px; }
+    .res-val { 
+        font-family: 'Orbitron'; font-size: 14px; color: #fff; 
+        margin-bottom: 12px; font-weight: bold; word-break: break-all;
+    }
+    
+    .id-box {
+        background: rgba(0,0,0,0.3);
+        padding: 10px; border-radius: 8px;
+        border: 1px dashed #00ff88;
+        cursor: pointer; transition: 0.2s;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .id-box:active { background: rgba(0, 255, 136, 0.2); }
+    .copy-hint { font-size: 10px; color: #00ff88; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* STEPS AREA */
+    .steps-area { width: 100%; max-width: 400px; }
+    .step-title { font-family: 'Orbitron'; color: #fff; font-size: 14px; margin-bottom: 15px; border-left: 3px solid var(--blue-glow); padding-left: 10px; }
+    
+    .step-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(0, 102, 255, 0.2);
+        display: flex; align-items: flex-start; gap: 15px;
+    }
+    .step-num {
+        background: var(--blue-deep); color: var(--blue-light);
+        width: 25px; height: 25px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: bold; border: 1px solid var(--blue-mid);
+        flex-shrink: 0;
+    }
+    .step-desc { font-size: 12px; color: #ccc; line-height: 1.5; font-family: 'Poppins'; }
+
+    /* POPUP & OVERLAY */
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2500; display: none; backdrop-filter: blur(3px); }
+    
+    .loading-popup {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #020a1c; border: 1px solid var(--blue-mid);
+        border-radius: 20px; padding: 30px; text-align: center;
+        z-index: 2600; display: none; width: 250px;
+        box-shadow: 0 0 40px rgba(0, 102, 255, 0.4);
+    }
+    
+    .clock-icon {
+        font-size: 40px; color: var(--blue-light);
+        margin-bottom: 15px;
+        animation: rotateClock 1s infinite linear; /* Putar setiap 1 detik */
+    }
+    
+    @keyframes rotateClock {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .pop-title { font-family: 'Orbitron'; font-size: 18px; color: #fff; margin-bottom: 5px; }
+    .pop-sub { font-size: 10px; color: #aaa; }
+
+    /* TOAST POPUP (Success/Copy) */
+    .toast-popup {
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: #020a1c; border: 1px solid #00ff88;
+        color: #fff; padding: 12px 25px; border-radius: 30px;
+        font-size: 12px; z-index: 3000; display: none;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        animation: slideDown 0.3s;
+    }
+    @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
+
+    /* EXIT BUTTON */
+    .exit-btn {
+        position: fixed; bottom: 25px; right: 25px;
+        width: 55px; height: 55px;
+        background: linear-gradient(135deg, #0042a6, #002244);
+        border: 1px solid var(--blue-mid);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 20px; cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000;
+        transition: 0.3s;
+    }
+    .exit-btn:active { transform: scale(0.9); }
+
+  </style>
+</head>
+<body>
+
+  <div id="overlay"></div>
+
+  <div id="loadingPopup" class="loading-popup">
+      <i class="fas fa-clock clock-icon"></i>
+      <div class="pop-title">Loading...</div>
+      <div class="pop-sub">Fetching Channel Data</div>
+  </div>
+
+  <div id="toastPopup" class="toast-popup">
+      <i class="fas fa-check-circle"></i> Success Copied!
+  </div>
+
+  <div class="exit-btn" onclick="window.location.href='/execution'">
+      <i class="fas fa-sign-out-alt"></i>
+  </div>
+
+  <div class="header-area">
+      <div class="glitch-text">Cek Id Chanels WhatsApp</div>
+      <div class="sub-text">WhatsApp Tools Generator</div>
+  </div>
+
+  <div class="form-container">
+      <span class="input-label">LINK CHANNEL WHATSAPP</span>
+      <input type="text" id="linkCh" class="cool-input" placeholder="https://whatsapp.com/channel/...">
+      
+      <button class="btn-check" id="btnCheck" onclick="checkId()">
+          <i class="fab fa-telegram-plane"></i> Cek Id WhatsApp
+      </button>
+  </div>
+
+  <div id="resultArea" class="result-area">
+      <div style="text-align:center; color:#00ff88; margin-bottom:15px; font-weight:bold;">
+          <i class="fas fa-check-circle"></i> Successfull Cek
+      </div>
+
+      <div class="res-label">NAMA CHANNEL</div>
+      <div class="res-val" id="resName">-</div>
+
+      <div class="res-label">ID CHANNEL (TAP TO COPY)</div>
+      <div class="id-box" onclick="copyId()">
+          <div class="res-val" style="margin:0;" id="resId">-</div>
+          <div class="copy-hint"><i class="far fa-copy"></i></div>
+      </div>
+      
+      <div class="res-label" style="margin-top:10px;">FOLLOWERS</div>
+      <div class="res-val" id="resFollow">-</div>
+  </div>
+
+  <div class="steps-area">
+      <div class="step-title">HOW TO USE</div>
+      <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-desc">Buka WhatsApp dan salin Link Saluran/Channel yang ingin dicek ID-nya.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-desc">Tempel link pada kolom input di atas.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-desc">Klik tombol "Cek Id WhatsApp" dan tunggu proses loading selesai.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-desc">Hasil akan muncul. Klik pada ID Channel untuk menyalinnya otomatis.</div>
+      </div>
+  </div>
+
+  <script>
+      async function checkId() {
+          const input = document.getElementById('linkCh');
+          const btn = document.getElementById('btnCheck');
+          const url = input.value.trim();
+          
+          const overlay = document.getElementById('overlay');
+          const loading = document.getElementById('loadingPopup');
+          const resultArea = document.getElementById('resultArea');
+
+          // 1. Validasi
+          if(!url) {
+              showToast('❌ Masukkan Link Channel dulu!', '#ff3333');
+              return;
+          }
+          if(!url.includes('whatsapp.com/channel')) {
+              showToast('⚠️ Format Link tidak valid!', '#ffcc00');
+              return;
+          }
+
+          // 2. Show Loading Popup
+          overlay.style.display = 'block';
+          loading.style.display = 'block';
+          resultArea.style.display = 'none';
+
+          try {
+              // 3. Request ke API Proxy
+              const apiUrl = `/api/execute-cekid?link=${encodeURIComponent(url)}`;
+              
+              const response = await fetch(apiUrl);
+              const data = await response.json();
+
+              // Sembunyikan Loading
+              loading.style.display = 'none';
+              overlay.style.display = 'none';
+
+              // 4. Handle Result
+              // Sesuaikan dengan struktur JSON API FAA
+              // Asumsi response: { status: true, result: { title: "...", id: "...", followers: "..." } }
+              
+              if(data.result) {
+                  showToast('✅ Successfull Cek!', '#00ff88');
+                  
+                  document.getElementById('resName').innerText = data.result.title || "Unknown";
+                  document.getElementById('resId').innerText = data.result.id || "Not Found";
+                  document.getElementById('resFollow').innerText = data.result.followers || "-";
+                  
+                  resultArea.style.display = 'block';
+                  input.value = ''; // Clear input
+              } else {
+                  showToast('❌ Data tidak ditemukan!', '#ff3333');
+              }
+
+          } catch (error) {
+              console.error(error);
+              loading.style.display = 'none';
+              overlay.style.display = 'none';
+              showToast('❌ Gagal menghubungi server!', '#ff3333');
+          }
+      }
+
+      function copyId() {
+          const idText = document.getElementById('resId').innerText;
+          if(idText === '-') return;
+
+          navigator.clipboard.writeText(idText).then(() => {
+              showToast('📋 Succesfull Salin Ke KlipBroad', '#00ff88');
+          }).catch(err => {
+              showToast('❌ Gagal Menyalin', '#ff3333');
+          });
+      }
+
+      function showToast(msg, color) {
+          const toast = document.getElementById('toastPopup');
+          toast.innerHTML = msg;
+          toast.style.borderColor = color || '#00ff88';
+          toast.style.display = 'block';
+          
+          setTimeout(() => {
+              toast.style.display = 'none';
+          }, 3000);
+      }
+  </script>
+
+</body>
+  </html>
+  
