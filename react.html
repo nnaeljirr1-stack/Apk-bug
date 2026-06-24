@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WA React Booster</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ================= VARIABLE (COOL BLUE THEME) ================= */
+    :root {
+        --bg-main: #020812; /* Deep Navy Black */
+        
+        /* Blue Palette */
+        --blue-deep: #020a1c;
+        --blue-mid: #0066ff;    /* Electric Blue */
+        --blue-light: #60efff;  /* Cyan Neon */
+        --blue-glow: #00ccff;   /* Glow Effect */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: var(--bg-main);
+      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* HEADER GLITCH STYLE */
+    .header-area { margin-bottom: 30px; text-align: center; margin-top: 40px; }
+    
+    .glitch-text {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 24px;
+        font-weight: 900;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .glitch-text::before, .glitch-text::after {
+        content: attr(data-text);
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-main);
+    }
+    /* Glitch Blue */
+    .glitch-text::before { left: 2px; text-shadow: -1px 0 #0066ff; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+    .glitch-text::after { left: -2px; text-shadow: -1px 0 #00d4ff; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+
+    @keyframes glitch-anim {
+        0% { clip: rect(10px, 9999px, 30px, 0); } 40% { clip: rect(20px, 9999px, 90px, 0); } 80% { clip: rect(40px, 9999px, 50px, 0); }
+    }
+    @keyframes glitch-anim2 {
+        0% { clip: rect(80px, 9999px, 20px, 0); } 40% { clip: rect(50px, 9999px, 30px, 0); } 80% { clip: rect(90px, 9999px, 10px, 0); }
+    }
+
+    .sub-text { font-size: 10px; color: var(--blue-light); letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
+
+    /* FORM CONTAINER */
+    .form-container {
+        width: 100%; max-width: 400px;
+        background: rgba(2, 10, 28, 0.6);
+        border: 1px solid var(--blue-mid);
+        border-radius: 20px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 30px rgba(0, 102, 255, 0.2);
+        margin-bottom: 30px;
+    }
+
+    .input-label { font-family: 'Orbitron'; font-size: 12px; color: var(--blue-light); margin-bottom: 8px; display: block; letter-spacing: 1px; }
+    
+    .cool-input {
+        width: 100%;
+        background: #020812;
+        border: 1px solid #004080;
+        border-radius: 15px;
+        padding: 16px 20px;
+        color: #fff;
+        font-family: 'Poppins'; font-size: 14px;
+        transition: 0.3s;
+        margin-bottom: 20px;
+    }
+    .cool-input:focus { border-color: var(--blue-glow); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+
+    /* Emoji Shortcuts Grid */
+    .emoji-grid {
+        display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;
+    }
+    .emoji-btn {
+        background: #051026; border: 1px solid var(--blue-mid);
+        border-radius: 10px; padding: 8px 12px; cursor: pointer;
+        font-size: 18px; transition: 0.2s; min-width: 45px; text-align: center;
+        color: #fff;
+    }
+    .emoji-btn:hover { background: var(--blue-mid); transform: scale(1.1); box-shadow: 0 0 10px var(--blue-glow); }
+
+    .btn-rocket {
+        width: 100%;
+        background: linear-gradient(90deg, #0052cc, #00d4ff);
+        border: none;
+        border-radius: 50px;
+        padding: 18px;
+        color: #fff;
+        font-family: 'Orbitron'; font-size: 16px;
+        letter-spacing: 1px; cursor: pointer;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        display: flex; justify-content: center; align-items: center; gap: 10px;
+        transition: 0.3s;
+    }
+    .btn-rocket:active { transform: scale(0.98); }
+    .btn-rocket i { font-size: 18px; }
+
+    /* STEPS AREA */
+    .steps-area { width: 100%; max-width: 400px; }
+    .step-title { font-family: 'Orbitron'; color: #fff; font-size: 14px; margin-bottom: 15px; border-left: 3px solid var(--blue-glow); padding-left: 10px; }
+    
+    .step-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(0, 102, 255, 0.2);
+        display: flex; align-items: flex-start; gap: 15px;
+    }
+    .step-num {
+        background: var(--blue-deep); color: var(--blue-light);
+        width: 25px; height: 25px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: bold; border: 1px solid var(--blue-mid);
+        flex-shrink: 0;
+    }
+    .step-desc { font-size: 12px; color: #ccc; line-height: 1.5; font-family: 'Poppins'; }
+
+    /* EXIT BUTTON (Bottom Right) */
+    .exit-btn {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 55px; height: 55px;
+        background: linear-gradient(135deg, #0042a6, #002244);
+        border: 1px solid var(--blue-mid);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 20px; cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000;
+        transition: 0.3s;
+    }
+    .exit-btn:active { transform: scale(0.9); }
+    .exit-btn:hover { border-color: var(--blue-glow); box-shadow: 0 0 25px rgba(0, 212, 255, 0.4); }
+
+    /* POPUP */
+    .custom-popup {
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: #020a1c; border: 1px solid var(--blue-glow);
+        color: #fff; padding: 12px 25px; border-radius: 30px;
+        font-size: 12px; z-index: 3000; display: none;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        animation: slideDown 0.3s;
+    }
+    @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
+
+  </style>
+</head>
+<body>
+
+  <div class="exit-btn" onclick="window.location.href='/execution'">
+      <i class="fas fa-sign-out-alt"></i>
+  </div>
+
+  <div id="notifPopup" class="custom-popup"><i class="fas fa-check-circle"></i> Success Sent!</div>
+
+  <div class="header-area">
+      <div class="glitch-text" data-text="Reaction Channels">Reaction Channels</div>
+      <div class="sub-text">WhatsApp Tools Generator</div>
+  </div>
+
+  <div class="form-container">
+      <span class="input-label">LINK CHANNEL WHATSAPP</span>
+      <input type="text" id="linkChannel" class="cool-input" placeholder="https://whatsapp.com/channel/...">
+      
+      <span class="input-label">REACTION EMOJI</span>
+      <input type="text" id="reactEmoji" class="cool-input" placeholder="Pick or type emoji (e.g. ❤️, 😂, 🔥)">
+      
+      <div class="emoji-grid">
+          <div class="emoji-btn" onclick="setEmoji('❤️')">❤️</div>
+          <div class="emoji-btn" onclick="setEmoji('😂')">😂</div>
+          <div class="emoji-btn" onclick="setEmoji('🔥')">🔥</div>
+          <div class="emoji-btn" onclick="setEmoji('👍')">👍</div>
+          <div class="emoji-btn" onclick="setEmoji('🚀')">🚀</div>
+          <div class="emoji-btn" onclick="setEmoji('💀')">💀</div>
+      </div>
+
+      <button class="btn-rocket" id="btnSend" onclick="sendReaction()">
+          <i class="fas fa-rocket"></i> Send React
+      </button>
+  </div>
+
+  <div class="steps-area">
+      <div class="step-title">HOW TO USE</div>
+      
+      <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-desc">Salin Link Saluran/Channel WhatsApp target (Format: https://whatsapp.com/channel/...).</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-desc">Tempel link pada kolom pertama.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-desc">Pilih atau ketik Emoji yang ingin dikirimkan sebagai reaksi.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-desc">Klik tombol "Send React" dan tunggu proses selesai.</div>
+      </div>
+  </div>
+
+  <script>
+      // Helper set emoji
+      function setEmoji(emoji) {
+          document.getElementById('reactEmoji').value = emoji;
+      }
+
+      async function sendReaction() {
+          const inputLink = document.getElementById('linkChannel');
+          const inputReact = document.getElementById('reactEmoji');
+          const btn = document.getElementById('btnSend');
+          
+          const url = inputLink.value.trim();
+          const react = inputReact.value.trim();
+
+          // 1. Validasi Input
+          if(!url || !react) {
+              showPopup('❌ Isi Link dan Pilih Emoji!', '#ff3333');
+              return;
+          }
+          if(!url.includes('whatsapp.com/channel')) {
+              showPopup('⚠️ Format Link tidak valid!', '#ffcc00');
+              return;
+          }
+
+          // 2. Loading UI
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+          btn.disabled = true;
+
+          try {
+              // 3. Request ke Server Proxy (Local)
+              const apiUrl = `/api/execute-react?link=${encodeURIComponent(url)}&react=${encodeURIComponent(react)}`;
+              
+              const response = await fetch(apiUrl);
+              const result = await response.json(); 
+
+              // 4. Handle Response
+              if(result.status || result.success || (result.message && result.message.includes('sukses'))) {
+                  showPopup(`✅ Sukses kirim emoji ${react}!`, '#00ff88');
+              } else {
+                  showPopup('✅ Permintaan dikirim!', '#00ff88');
+              }
+
+          } catch (error) {
+              console.error(error);
+              showPopup('❌ Gagal Terhubung ke Server!', '#ff3333');
+          } finally {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+          }
+      }
+
+      function showPopup(msg, color) {
+          const popup = document.getElementById('notifPopup');
+          let icon = '<i class="fas fa-check-circle"></i>';
+          if(color === '#ff3333' || color === '#ffcc00') icon = '<i class="fas fa-exclamation-circle"></i>';
+          
+          popup.innerHTML = icon + ' ' + msg.replace('✅ ', '').replace('❌ ', '').replace('⚠️ ', '');
+          
+          popup.style.borderColor = color || '#00d4ff';
+          popup.style.display = 'block';
+          
+          setTimeout(() => {
+              popup.style.display = 'none';
+          }, 3000);
+      }
+  </script>
+
+</body>
+</html>
+
+            
