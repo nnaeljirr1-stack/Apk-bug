@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tracking IP</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ================= VARIABLE (COOL BLUE THEME) ================= */
+    :root {
+        --bg-main: #020812; /* Deep Navy Black */
+        
+        /* Blue Palette */
+        --blue-deep: #020a1c;
+        --blue-mid: #0066ff;    /* Electric Blue */
+        --blue-light: #60efff;  /* Cyan Neon */
+        --blue-glow: #00ccff;   /* Glow Effect */
+        --text-white: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-white);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* HEADER */
+    .header-area { margin-bottom: 30px; text-align: center; margin-top: 40px; }
+    .glitch-text {
+        font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900;
+        color: #fff; text-transform: uppercase; letter-spacing: 1px;
+        text-shadow: 2px 2px var(--blue-mid);
+    }
+    .sub-text { font-size: 10px; color: var(--blue-light); letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+
+    /* FORM CONTAINER */
+    .form-container {
+        width: 100%; max-width: 400px;
+        background: rgba(2, 10, 28, 0.6);
+        border: 1px solid var(--blue-mid);
+        border-radius: 20px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 30px rgba(0, 102, 255, 0.2);
+        margin-bottom: 20px;
+    }
+
+    .input-label { font-family: 'Orbitron'; font-size: 12px; color: var(--blue-light); margin-bottom: 8px; display: block; letter-spacing: 1px; }
+    
+    .cool-input {
+        width: 100%; background: #020812; border: 1px solid #004080;
+        border-radius: 15px; padding: 16px 20px; color: #fff;
+        font-family: 'Poppins'; font-size: 14px; margin-bottom: 20px; transition: 0.3s;
+    }
+    .cool-input:focus { border-color: var(--blue-glow); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+
+    .btn-rocket {
+        width: 100%; background: linear-gradient(90deg, #0052cc, #00d4ff);
+        border: none; border-radius: 50px; padding: 18px; color: #fff;
+        font-family: 'Orbitron'; font-size: 16px; letter-spacing: 1px; cursor: pointer;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s;
+    }
+    .btn-rocket:active { transform: scale(0.98); }
+
+    /* RESULT AREA */
+    .result-area {
+        width: 100%; max-width: 400px;
+        background: rgba(2, 10, 28, 0.8);
+        border: 1px solid var(--blue-mid);
+        border-radius: 20px; padding: 0;
+        margin-bottom: 20px; display: none; overflow: hidden;
+        animation: slideUp 0.5s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .res-header {
+        background: linear-gradient(135deg, #020a1c, #002244);
+        padding: 20px; text-align: center; border-bottom: 1px solid var(--blue-mid);
+    }
+    .res-flag { font-size: 40px; margin-bottom: 10px; display: block; }
+    .res-ip { font-family: 'Orbitron'; font-size: 20px; color: #fff; letter-spacing: 1px; }
+    .res-sub { font-size: 11px; color: var(--blue-light); }
+
+    .res-body { padding: 20px; }
+    .info-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);
+        padding-bottom: 8px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .lbl { color: #aaa; font-size: 11px; font-family: 'Poppins'; }
+    .val { color: #fff; font-weight: bold; font-size: 13px; text-align: right; }
+
+    .btn-maps {
+        width: 100%; padding: 12px; margin-top: 10px;
+        background: rgba(0, 212, 255, 0.1); border: 1px solid var(--blue-light);
+        border-radius: 10px; color: var(--blue-light); font-size: 12px; cursor: pointer;
+        display: block; text-align: center; text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn-maps:hover { background: var(--blue-light); color: #000; }
+
+    /* STEPS AREA */
+    .steps-area { width: 100%; max-width: 400px; }
+    .step-title { font-family: 'Orbitron'; color: #fff; font-size: 14px; margin-bottom: 15px; border-left: 3px solid var(--blue-glow); padding-left: 10px; }
+    .step-card {
+        background: rgba(255, 255, 255, 0.03); border-radius: 12px; padding: 15px;
+        margin-bottom: 10px; border: 1px solid rgba(0, 102, 255, 0.2);
+        display: flex; align-items: flex-start; gap: 15px;
+    }
+    .step-num {
+        background: var(--blue-deep); color: var(--blue-light);
+        width: 25px; height: 25px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: bold; border: 1px solid var(--blue-mid); flex-shrink: 0;
+    }
+    .step-desc { font-size: 12px; color: #ccc; line-height: 1.5; font-family: 'Poppins'; }
+
+    /* POPUPS */
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2500; display: none; backdrop-filter: blur(3px); }
+    .loading-popup {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #020a1c; border: 1px solid var(--blue-mid);
+        border-radius: 20px; padding: 30px; text-align: center;
+        z-index: 2600; display: none; width: 250px;
+        box-shadow: 0 0 40px rgba(0, 102, 255, 0.4);
+    }
+    .loading-popup i { font-size: 40px; color: var(--blue-light); margin-bottom: 15px; animation: spin 1s infinite linear; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .toast-popup {
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: #020a1c; border: 1px solid #00ff88;
+        color: #fff; padding: 12px 25px; border-radius: 30px;
+        font-size: 12px; z-index: 3000; display: none;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    }
+
+    .exit-btn {
+        position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px;
+        background: linear-gradient(135deg, #0042a6, #002244); border: 1px solid var(--blue-mid);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        z-index: 2000; transition: 0.3s;
+    }
+    .exit-btn:active { transform: scale(0.9); }
+
+  </style>
+</head>
+<body>
+
+  <div id="overlay"></div>
+
+  <div id="loadingPopup" class="loading-popup">
+      <i class="fas fa-circle-notch"></i>
+      <div style="font-family:'Orbitron'; margin-bottom:5px;">Tracking...</div>
+      <div style="font-size:10px; color:#aaa;">Menganalisis Sinyal</div>
+  </div>
+
+  <div id="toastPopup" class="toast-popup"></div>
+
+  <div class="exit-btn" onclick="window.location.href='/execution'">
+      <i class="fas fa-sign-out-alt"></i>
+  </div>
+
+  <div class="header-area">
+      <div class="glitch-text">Tracking IP</div>
+      <div class="sub-text">Geolocation Finder</div>
+  </div>
+
+  <div class="form-container">
+      <span class="input-label">IP ADDRESS</span>
+      <input type="text" id="ipInput" class="cool-input" placeholder="contoh: 114.125.x.x">
+      
+      <button class="btn-rocket" onclick="trackIP()">
+          <i class="fas fa-bug"></i> Track IP
+      </button>
+  </div>
+
+  <div id="resultArea" class="result-area">
+      <div class="res-header">
+          <div id="resFlag" class="res-flag">🌐</div>
+          <div id="resIP" class="res-ip">0.0.0.0</div>
+          <div id="resCountry" class="res-sub">Unknown Location</div>
+      </div>
+      
+      <div class="res-body">
+          <div class="info-row">
+              <span class="lbl">City / Region</span>
+              <span class="val" id="resCity">-</span>
+          </div>
+          <div class="info-row">
+              <span class="lbl">ISP Name</span>
+              <span class="val" id="resIsp">-</span>
+          </div>
+          <div class="info-row">
+              <span class="lbl">Timezone</span>
+              <span class="val" id="resTime">-</span>
+          </div>
+          <div class="info-row">
+              <span class="lbl">Lat / Lon</span>
+              <span class="val" id="resLatLon">-</span>
+          </div>
+          
+          <a id="btnMaps" href="#" target="_blank" class="btn-maps">
+              <i class="fas fa-map-marked-alt"></i> Buka di Google Maps
+          </a>
+      </div>
+  </div>
+
+  <div class="steps-area">
+      <div class="step-title">HOW TO USE</div>
+      <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-desc">Masukkan Alamat IP target yang ingin dilacak.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-desc">Klik tombol "Track IP".</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-desc">Tunggu proses analisis selesai.</div>
+      </div>
+      <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-desc">Lokasi dan ISP akan muncul. Klik tombol Maps untuk melihat lokasi.</div>
+      </div>
+  </div>
+
+  <script>
+      async function trackIP() {
+          const input = document.getElementById('ipInput');
+          const ip = input.value.trim();
+          
+          const overlay = document.getElementById('overlay');
+          const loading = document.getElementById('loadingPopup');
+          const resultArea = document.getElementById('resultArea');
+
+          if(!ip) {
+              showToast('❌ Masukkan IP Address!', '#ff3333');
+              return;
+          }
+
+          // Show Loading
+          overlay.style.display = 'block';
+          loading.style.display = 'block';
+          resultArea.style.display = 'none';
+
+          try {
+              const response = await fetch(`/api/execute-track-ip?ip=${encodeURIComponent(ip)}`);
+              const result = await response.json();
+
+              loading.style.display = 'none';
+              overlay.style.display = 'none';
+
+              if(result.status && result.data) {
+                  const d = result.data;
+                  
+                  // Update UI
+                  document.getElementById('resIP').innerText = d.ip || ip;
+                  document.getElementById('resCountry').innerText = d.country || "Unknown";
+                  document.getElementById('resCity').innerText = `${d.city || '-'}, ${d.region || '-'}`;
+                  document.getElementById('resIsp').innerText = d.isp || d.org || "-";
+                  document.getElementById('resTime').innerText = d.timezone || "-";
+                  document.getElementById('resLatLon').innerText = `${d.lat || 0}, ${d.lon || 0}`;
+                  
+                  // Set Maps Link
+                  const lat = d.lat || 0;
+                  const lon = d.lon || 0;
+                  document.getElementById('btnMaps').href = `http://maps.google.com/maps?q=${lat},${lon}`;
+
+                  // Show Result
+                  resultArea.style.display = 'block';
+                  showToast('✅ Tracking Berhasil!', '#00ff88');
+              } else {
+                  showToast('❌ IP Tidak Ditemukan.', '#ff3333');
+              }
+
+          } catch (error) {
+              console.error(error);
+              loading.style.display = 'none';
+              overlay.style.display = 'none';
+              showToast('❌ Server Error!', '#ff3333');
+          }
+      }
+
+      function showToast(msg, color) {
+          const toast = document.getElementById('toastPopup');
+          toast.innerHTML = msg;
+          toast.style.borderColor = color || '#00ff88';
+          toast.style.display = 'block';
+          
+          setTimeout(() => {
+              toast.style.display = 'none';
+          }, 3000);
+      }
+  </script>
+
+</body>
+</html>
+
+    
