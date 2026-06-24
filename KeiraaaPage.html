@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SILENT NIGHT</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ================= VARIABLE & RESET (BLUE THEME) ================= */
+    :root {
+        --blue-main: #0066ff; /* Electric Blue */
+        --blue-dark: #020a1c; /* Deep Navy */
+        --blue-glow: #00d4ff; /* Cyan Neon */
+        --text-white: #ffffff;
+        --glass-bg: rgba(2, 10, 20, 0.7);
+        --input-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: #000;
+      color: var(--text-white);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* BACKGROUND VIDEO BLUR */
+    .bg-video-container {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        overflow: hidden;
+    }
+    .bg-video {
+        width: 100%; height: 100%; object-fit: cover;
+        filter: blur(8px) brightness(0.5);
+        transform: scale(1.1);
+    }
+
+    /* ================= VIEW CONTAINER ================= */
+    .view-section {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        display: none; flex-direction: column; align-items: center;
+        /* Default Justify Center, tapi nanti di-override khusus Home */
+        justify-content: center; 
+        padding: 20px;
+        opacity: 0; transition: opacity 0.5s ease;
+    }
+    .view-section.active { display: flex; opacity: 1; }
+
+    /* ================= VIEW 1: HOME (POSISI BARU) ================= */
+    #view-home {
+        /* Ubah posisi jadi start (atas) */
+        justify-content: flex-start;
+        padding-top: 60px; /* Jarak dari atas layar */
+    }
+
+    .v-profile-img {
+        width: 90px; height: 90px; border-radius: 50%;
+        border: 2px solid var(--blue-glow);
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+        margin-bottom: 20px; object-fit: cover;
+        /* Animasi floating dikit biar keren */
+        animation: floatImg 3s ease-in-out infinite;
+    }
+    @keyframes floatImg { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    .v-banner-box {
+        width: 100%; max-width: 350px; height: 180px;
+        border-radius: 20px; overflow: hidden; position: relative;
+        /* Jarak banner ke elemen bawahnya */
+        margin-bottom: 10px; 
+        box-shadow: 0 10px 40px rgba(0, 102, 255, 0.3);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    .v-banner-vid { width: 100%; height: 100%; object-fit: cover; }
+    
+    .v-banner-text {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900;
+        color: #fff; letter-spacing: 2px; text-shadow: 0 0 15px var(--blue-main);
+        text-align: center; width: 100%;
+    }
+
+    /* Area Tengah (Spacer) untuk teks kecil & tombol */
+    .v-middle-area {
+        flex-grow: 1; /* Mengisi ruang kosong agar berada di tengah */
+        display: flex; flex-direction: column; 
+        justify-content: center; align-items: center;
+        width: 100%; max-height: 250px; /* Batasi tinggi area tengah */
+    }
+
+    .v-action-text { 
+        font-size: 13px; color: #ccc; margin-bottom: 20px; letter-spacing: 1px; text-align: center;
+    }
+
+    .v-btn {
+        width: 100%; max-width: 300px; padding: 15px; border-radius: 50px;
+        font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 1px;
+        text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 15px;
+    }
+    
+    .v-btn-solid {
+        background: linear-gradient(90deg, var(--blue-main), var(--blue-glow));
+        color: #fff; border: none;
+        box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+    }
+    .v-btn-solid:active { transform: scale(0.98); }
+
+    .v-btn-trans {
+        background: rgba(0, 0, 0, 0.3); border: 1px solid var(--blue-glow); color: #fff;
+    }
+    .v-btn-trans:active { background: rgba(0, 212, 255, 0.1); }
+
+    /* Footer Area (Kotak Khusus) */
+    .v-footer-area { 
+        width: 90%; max-width: 320px;
+        /* Posisi Absolut di bawah tapi ada jarak (mentok tapi gak kebawah banget) */
+        position: absolute; bottom: 40px; 
+        background: rgba(2, 10, 28, 0.8); /* Background kotak */
+        border: 1px solid var(--blue-glow);
+        border-radius: 20px;
+        padding: 15px;
+        display: flex; flex-direction: column; align-items: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .v-contact-label { font-size: 10px; color: #aaa; margin-bottom: 8px; letter-spacing: 2px; }
+    .v-telegram-btn {
+        width: 45px; height: 45px; background: var(--blue-dark);
+        border-radius: 50%; border: 1px solid var(--blue-glow);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--blue-glow); font-size: 18px; margin-bottom: 5px;
+        cursor: pointer; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+    }
+    .v-copy { font-size: 9px; color: #666; font-family: 'Orbitron'; }
+
+    /* ================= VIEW 2: LOGIN FORM ================= */
+    .l-card { width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; }
+
+    .l-profile-img {
+        width: 90px; height: 90px; border-radius: 20px; object-fit: cover; margin-bottom: 20px;
+        box-shadow: 0 0 30px rgba(0, 102, 255, 0.5); border: 2px solid var(--blue-glow);
+    }
+
+    .l-title { font-family: 'Orbitron'; font-size: 22px; margin-bottom: 5px; letter-spacing: 1px; color: #fff; text-shadow: 0 0 10px var(--blue-glow); }
+    .l-sub { font-size: 12px; color: #aaa; margin-bottom: 30px; }
+
+    .l-input-box {
+        width: 100%; position: relative; margin-bottom: 15px;
+        background: rgba(2, 10, 20, 0.8); border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px;
+    }
+    .l-input-box i { color: var(--blue-glow); font-size: 18px; }
+    
+    .l-input { width: 100%; background: transparent; border: none; color: #fff; font-family: 'Poppins'; font-size: 14px; }
+    .l-input::placeholder { color: #666; }
+
+    .eye-icon { cursor: pointer; color: #666; transition: 0.3s; }
+    .eye-icon:hover { color: #fff; }
+
+    .l-btn-submit {
+        width: 100%; height: 50px;
+        background: linear-gradient(90deg, #0040ff, #00ccff);
+        border: none; border-radius: 50px;
+        color: #fff; font-family: 'Orbitron'; font-size: 16px;
+        cursor: pointer; margin-top: 20px; position: relative; overflow: hidden;
+        transition: all 0.5s ease; box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+    }
+    
+    .l-btn-submit.shrink {
+        width: 50px; border-radius: 50%; color: transparent;
+        background: transparent; border: 2px solid var(--blue-glow);
+    }
+    .l-btn-submit.shrink::after {
+        content: ''; position: absolute; top: 50%; left: 50%; width: 25px; height: 25px;
+        margin-top: -12.5px; margin-left: -12.5px; border: 3px solid transparent;
+        border-top-color: var(--blue-glow); border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ================= VIEW 3: LOADING SCREEN ================= */
+    /* Flex center untuk loading screen */
+    #loadingScreen { justify-content: center; } 
+
+    .load-banner-box {
+        width: 100%; max-width: 320px; height: 180px;
+        border-radius: 15px; overflow: hidden;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        /* Margin bottom dikurangi agar agak tengah */
+        margin-bottom: 40px; 
+        box-shadow: 0 0 40px rgba(0, 102, 255, 0.5);
+        position: relative;
+    }
+    .load-vid { width: 100%; height: 100%; object-fit: cover; }
+
+    .load-text-bottom {
+        /* Posisi Relatif terhadap flex container, bukan absolute bottom layar */
+        font-family: 'Orbitron'; font-size: 24px; letter-spacing: 2px;
+        color: var(--blue-glow); text-shadow: 0 0 10px var(--blue-main);
+        animation: textPulse 1s infinite alternate;
+        text-align: center; margin-top: 10px;
+    }
+    @keyframes textPulse { from { opacity: 0.6; } to { opacity: 1; text-shadow: 0 0 20px var(--blue-glow); } }
+
+    /* Popup */
+    #customPopup {
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(2, 10, 28, 0.95); color: #fff;
+        padding: 12px 25px; border-radius: 30px; font-size: 12px;
+        border: 1px solid var(--blue-glow); z-index: 3000; display: none;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="customPopup">Notification</div>
+
+  <form method="POST" action="/auth" id="serverForm" style="display:none;">
+      <input type="text" name="username" id="realUser">
+      <input type="text" name="key" id="realPass">
+  </form>
+
+  <div class="bg-video-container">
+      <video class="bg-video" autoplay muted loop playsinline>
+          <source src="https://files.catbox.moe/vp9emw.mp4" type="video/mp4">
+      </video>
+  </div>
+
+  <div id="view-home" class="view-section active">
+      <img src="https://files.catbox.moe/t33re7.jpg" class="v-profile-img" alt="Profile">
+      
+      <div class="v-banner-box">
+          <video class="v-banner-vid" autoplay muted loop playsinline>
+              <source src="https://files.catbox.moe/vp9emw.mp4" type="video/mp4">
+          </video>
+          <div class="v-banner-text">SILENT NIGHT</div>
+      </div>
+
+      <div class="v-middle-area">
+          <div class="v-action-text">Please Log in or Register to continue</div>
+
+          <div class="v-btn v-btn-solid" onclick="goToLoginForm()">Login</div>
+          <div class="v-btn v-btn-trans" onclick="goToRegister()">Register</div>
+      </div>
+
+      <div class="v-footer-area">
+          <div class="v-contact-label">Contact Us</div>
+          <div class="v-telegram-btn" onclick="window.location.href='https://t.me/Kenzzro'">
+              <i class="fab fa-telegram-plane"></i>
+          </div>
+          <div class="v-copy">© 2026 SILENT NIGHT</div>
+      </div>
+  </div>
+
+  <div id="view-login" class="view-section">
+      <div class="l-card">
+          <img src="https://g.top4top.io/p_3648qc6om1.jpg" class="l-profile-img" alt="Avatar">
+          <h2 class="l-title">Welcome Back</h2>
+          <p class="l-sub">Enter your credentials</p>
+
+          <div class="l-input-box">
+              <i class="far fa-user"></i>
+              <input type="text" id="visUser" class="l-input" placeholder="Username">
+          </div>
+
+          <div class="l-input-box">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="visPass" class="l-input" placeholder="Password">
+              <i class="far fa-eye eye-icon" id="togglePass" onclick="togglePassword()"></i>
+          </div>
+
+          <button class="l-btn-submit" id="btnLogin">Sign In</button>
+      </div>
+  </div>
+
+  <div id="loadingScreen" class="view-section">
+      <div class="load-banner-box">
+          <video id="loadingVideoPlayer" class="load-vid" loop playsinline>
+              <source src="https://files.catbox.moe/n55wnm.mp4" type="video/mp4">
+          </video>
+      </div>
+  </div>
+
+  <script>
+    // --- NAVIGASI HALAMAN ---
+    function switchView(targetId) {
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.classList.remove('active');
+            }, 400); 
+        });
+
+        setTimeout(() => {
+            const target = document.getElementById(targetId);
+            target.classList.add('active');
+            void target.offsetWidth; 
+            target.style.opacity = '1';
+        }, 400);
+    }
+
+    // --- LOGIKA TOMBOL HOME -> LOGIN ---
+    function goToLoginForm() {
+        // Cek apakah ada data tersimpan untuk Auto-Fill (BUKAN Auto-Login)
+        const savedUser = localStorage.getItem('silentUser');
+        const savedPass = localStorage.getItem('silentPass');
+
+        if(savedUser) document.getElementById('visUser').value = savedUser;
+        if(savedPass) document.getElementById('visPass').value = savedPass;
+
+        // Selalu arahkan ke Form Login dulu
+        switchView('view-login');
+    }
+
+    function goToRegister() {
+        window.location.href = "https://t.me/Keiraa_md";
+    }
+
+    function togglePassword() {
+        const passInput = document.getElementById('visPass');
+        const icon = document.getElementById('togglePass');
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passInput.type = "password";
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // --- LOGIKA TOMBOL SIGN IN ---
+    document.getElementById('btnLogin').addEventListener('click', function() {
+        const u = document.getElementById('visUser').value.trim();
+        const p = document.getElementById('visPass').value.trim();
+        const btn = this;
+
+        // 1. Pengecekan Input (Sederhana)
+        if(!u || !p) {
+            showPopup("Username & Password wajib diisi!", "red");
+            // Tetap di halaman ini
+            return;
+        }
+
+        // 2. Jika Benar (Terisi), Lanjut ke Loading
+        // Simpan data untuk sesi berikutnya
+        localStorage.setItem('silentUser', u);
+        localStorage.setItem('silentPass', p);
+        
+        // Isi Form Hidden
+        document.getElementById('realUser').value = u;
+        document.getElementById('realPass').value = p;
+
+        // Animasi Tombol
+        btn.classList.add('shrink');
+
+        setTimeout(() => {
+            startLoadingProcess();
+        }, 1500);
+    });
+
+    // --- PROSES LOADING ---
+    function startLoadingProcess() {
+        switchView('loadingScreen');
+
+        // Nyalakan Suara Video Loading
+        const loadingVid = document.getElementById('loadingVideoPlayer');
+        if(loadingVid) {
+            loadingVid.muted = false; // Unmute
+            loadingVid.volume = 1.0;
+            loadingVid.currentTime = 0;
+            loadingVid.play().catch(e => console.log("Audio play blocked"));
+        }
+
+        // Submit ke Server setelah 14 detik
+        setTimeout(() => {
+            document.getElementById('serverForm').submit();
+        }, 14000); 
+    }
+
+    // --- UTILS ---
+    function showPopup(msg, color) {
+        const popup = document.getElementById('customPopup');
+        popup.innerText = msg;
+        popup.style.borderColor = color === 'red' ? '#ff3333' : '#00d4ff';
+        popup.style.color = color === 'red' ? '#ff3333' : '#fff';
+        popup.style.display = 'block';
+        setTimeout(() => { popup.style.display = 'none'; }, 3000);
+    }
+
+    // Cek Pesan Server saat Load (Misal: Password Salah dari server)
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const serverMsg = urlParams.get('msg');
+        
+        // Jika baru buka (tidak ada msg), tetap di Home View (Default HTML)
+        
+        // Jika ada pesan error (redirect dari server karena salah password/habis)
+        if(serverMsg) {
+            // Hapus session biar gak auto-fill yang salah
+            localStorage.removeItem('silentPass'); 
+            
+            showPopup(decodeURIComponent(serverMsg), 'red');
+            
+            // Arahkan ke Login Form lagi agar user bisa input ulang
+            switchView('view-login');
+        } 
+    });
+  </script>
+
+</body>
+  </html>
